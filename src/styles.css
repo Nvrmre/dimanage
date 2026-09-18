@@ -241,3 +241,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (min-width: 1200px) {
   .app-shell { max-width: 1120px; }
 }
+
+/* ---- day detail modal ---- */
+.day-detail-modal { max-width: 400px; width: 90vw; }
+.modal-overlay { z-index: 50; }
