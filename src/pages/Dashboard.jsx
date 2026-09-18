@@ -76,8 +76,29 @@ export default function Dashboard({ user, onLogout }) {
   };
 
   const nav = (dir) => {
-    if (view === 'monthly') setMonth((m) => addMonths(m + '-01', dir).slice(0, 7));
-    if (view === 'weekly') setWeek((w) => addDays(w, 7 * dir));
+    if (view === 'monthly') {
+      setMonth((m) => addMonths(m + '-01', dir).slice(0, 7));
+    }
+    if (view === 'weekly') {
+      setWeek((w) => {
+        const next = addDays(w, 7 * dir);
+        // keep month in sync with the new week
+        setMonth(monthStart(next).slice(0, 7));
+        return next;
+      });
+    }
+  };
+
+  const changeView = (v) => {
+    if (v === 'weekly') {
+      // ensure week matches the currently selected date
+      setWeek(weekStart(selDate || today));
+    }
+    if (v === 'monthly') {
+      // ensure month matches the currently selected week/date
+      setMonth(monthStart(selDate || today).slice(0, 7));
+    }
+    setView(v);
   };
 
   const navLabel = () => {
@@ -119,7 +140,7 @@ export default function Dashboard({ user, onLogout }) {
           </section>
         )}
 
-        <SummaryTabs view={view} onChange={setView} />
+        <SummaryTabs view={view} onChange={changeView} />
 
         <div className="period-nav">
           <button className="btn btn-ghost" aria-label="Sebelumnya" onClick={() => nav(-1)}>‹</button>

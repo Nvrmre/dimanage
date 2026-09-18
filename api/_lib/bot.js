@@ -7,13 +7,13 @@ import { formatRp, parseAmount, netProfit } from './format.js';
 import { mergeByDate, dailySummary, monthlySummary, daysInMonth } from './summary.js';
 
 const HELP_TEXT = [
-  '*Dimanage — Finance Tracker*',
+  '📊 *Dimanage — Finance Tracker*',
   '',
   'Perintah:',
   '/lapor — catat pendapatan & pengeluaran hari ini',
-  '/beli\\_bahan — catat belanja bahan baku',
-  '/lihat\\_hari — ringkasan hari ini',
-  '/lihat\\_bulan — ringkasan bulan ini',
+  '/beli_bahan — catat belanja bahan baku',
+  '/lihat_hari — ringkasan hari ini',
+  '/lihat_bulan — ringkasan bulan ini',
   '/history — 7 hari terakhir',
   '/token — link akses web dashboard',
   '/help — bantuan'
@@ -78,7 +78,7 @@ export async function fetchRangeData(db, userId, startStr, endStr) {
 
 export async function startLapor(db, user) {
   await setBotState(db, user.id, { flow: 'lapor', step: 'income' });
-  return 'Catat laporan hari ini.\n\nBerapa *pendapatan* hari ini? (angka saja, contoh: 500000)';
+  return '📝 Catat laporan hari ini.\n\nBerapa *pendapatan* hari ini? (angka saja, contoh: 500000)';
 }
 
 export async function handleLaporStep(db, user, state, text) {
@@ -87,10 +87,10 @@ export async function handleLaporStep(db, user, state, text) {
   if (state.step === 'income') {
     const amount = parseAmount(text);
     if (amount == null || amount <= 0) {
-      return 'Pendapatan harus angka positif.\nContoh: 500000 — coba lagi:';
+      return '⚠️ Pendapatan harus angka positif.\nContoh: 500000 — coba lagi:';
     }
     await setBotState(db, user.id, { flow: 'lapor', step: 'expense', income: amount });
-    return `Pendapatan: *${formatRp(amount)}*\n\nBerapa *pengeluaran* hari ini? (angka, atau ketik *tidak* jika tidak ada)`;
+    return `Pendapatan: *${formatRp(amount)}* ✅\n\nBerapa *pengeluaran* hari ini? (angka, atau ketik *tidak* jika tidak ada)`;
   }
 
   if (state.step === 'expense') {
@@ -99,7 +99,7 @@ export async function handleLaporStep(db, user, state, text) {
     if (!['tidak', 'gak', 'ga', 'nggak', '0', '-'].includes(t)) {
       const amount = parseAmount(text);
       if (amount == null) {
-        return 'Ketik angka (contoh: 50000) atau *tidak* jika tidak ada pengeluaran.';
+        return '⚠️ Ketik angka (contoh: 50000) atau *tidak* jika tidak ada pengeluaran.';
       }
       expense = amount;
     }
@@ -140,7 +140,7 @@ async function finishLapor(db, user, income, dailyExpense, note) {
 function confirmLapor(income, expense, note) {
   const profit = income - expense;
   const lines = [
-    '*Laporan tersimpan!*',
+    '✅ *Laporan tersimpan!*',
     '',
     `Pendapatan : ${formatRp(income)}`,
     `Pengeluaran : ${formatRp(expense)}`,
@@ -154,17 +154,17 @@ function confirmLapor(income, expense, note) {
 
 export async function startBeliBahan(db, user) {
   await setBotState(db, user.id, { flow: 'beli_bahan', step: 'amount' });
-  return 'Catat belanja bahan baku.\n\nBerapa total belanja? (contoh: 2jt atau 2000000)';
+  return '🛒 Catat belanja bahan baku.\n\nBerapa total belanja? (contoh: 2jt atau 2000000)';
 }
 
 export async function handleBeliBahanStep(db, user, state, text) {
   if (state.step === 'amount') {
     const amount = parseAmount(text);
     if (amount == null || amount <= 0) {
-      return 'Nominal harus angka positif.\nContoh: 2jt atau 2000000 — coba lagi:';
+      return '⚠️ Nominal harus angka positif.\nContoh: 2jt atau 2000000 — coba lagi:';
     }
     await setBotState(db, user.id, { flow: 'beli_bahan', step: 'date', amount });
-    return `Belanja: *${formatRp(amount)}*\n\nBeban untuk tanggal berapa?\nKetik tanggal (YYYY-MM-DD) atau *hari ini*.`;
+    return `Belanja: *${formatRp(amount)}* ✅\n\nBeban untuk tanggal berapa?\nKetik tanggal (YYYY-MM-DD) atau *hari ini*.`;
   }
 
   if (state.step === 'date') {
@@ -175,7 +175,7 @@ export async function handleBeliBahanStep(db, user, state, text) {
     } else {
       const parsed = parseDate(text.trim());
       if (!parsed) {
-        return 'Format tanggal salah. Gunakan YYYY-MM-DD (contoh: 2026-09-19) atau ketik *hari ini*.';
+        return '⚠️ Format tanggal salah. Gunakan YYYY-MM-DD (contoh: 2026-09-19) atau ketik *hari ini*.';
       }
       expenseDate = text.trim();
     }
@@ -193,7 +193,7 @@ export async function handleBeliBahanStep(db, user, state, text) {
     if (error) throw error;
     await setBotState(db, user.id, null);
     return [
-      '*Belanja bahan baku tercatat!*',
+      '✅ *Belanja bahan baku tercatat!*',
       '',
       `Nominal : ${formatRp(state.amount, { compact: true })}`,
       `Tanggal beban : ${formatDateID(expenseDate, true).label} (${formatDateID(expenseDate, true).hari})`,
@@ -213,7 +213,7 @@ export async function lihatHari(db, user, dateStr) {
   const s = dailySummary(map, date);
   const { label, hari } = formatDateID(date, true);
   const lines = [
-    `*${hari}, ${label}*`,
+    `📅 *${hari}, ${label}*`,
     '',
     `Pendapatan   : ${formatRp(s.income)}`,
     `Pengeluaran  : ${formatRp(s.total_expense)}`
@@ -234,7 +234,7 @@ export async function lihatBulan(db, user, baseDate) {
   const s = monthlySummary(map, mStart, daysInMonth);
   const best = s.rows.filter((r) => r.has_data).sort((a, b) => b.net - a.net)[0];
   const lines = [
-    `*Ringkasan ${monthNameID(m)} ${y}*`,
+    `📊 *Ringkasan ${monthNameID(m)} ${y}*`,
     '',
     `Pendapatan     : ${formatRp(s.total_income)}`,
     `Pengeluaran    : ${formatRp(s.total_expense)}`,
@@ -246,7 +246,7 @@ export async function lihatBulan(db, user, baseDate) {
     const bestInfo = formatDateID(best.date, true);
     lines.push(`Hari terbaik: ${bestInfo.hari}, ${bestInfo.label} (${formatRp(best.net)})`);
   }
-  lines.push('', 'Lihat detail: buka web dashboard.');
+  lines.push('', 'Lihat detail: buka web dashboard 📈');
   return lines.join('\n');
 }
 
@@ -254,16 +254,16 @@ export async function history7Hari(db, user) {
   const end = todayWIB();
   const start = addDays(end, -6);
   const map = await fetchRangeData(db, user.id, start, end);
-  const lines = ['*7 Hari Terakhir*', ''];
+  const lines = ['📅 *7 Hari Terakhir*', ''];
   let total = 0;
   for (let d = start; d <= end; d = addDays(d, 1)) {
     const s = dailySummary(map, d);
     total += s.net;
-    const { label } = formatDateID(d);
+    const { label, hari } = formatDateID(d, true);
     if (!s.has_data) {
       lines.push(`${label} — _belum ada data_`);
     } else {
-      lines.push(`${label} — ${formatRp(s.income)} - ${formatRp(s.total_expense)} = *${formatRp(s.net)}*`);
+      lines.push(`${hari}, ${label} — ${formatRp(s.income)} - ${formatRp(s.total_expense)} = *${formatRp(s.net)}*`);
     }
   }
   lines.push('', `*Total 7 hari: ${formatRp(total)}*`);
@@ -315,7 +315,7 @@ export async function processReminderForUser(db, sendFn, user, dateStr, botToken
   }
 
   const text =
-    '*Pengingat*\n\n' +
+    '⏰ *Pengingat*\n\n' +
     'Kamu belum mengisi laporan hari ini.\n' +
     'Ketik /lapor untuk mencatat pendapatan dan pengeluaran.';
 
@@ -376,7 +376,7 @@ export async function retryFailedReminders(db, sendFn, dateStr, botToken) {
     const tgId = r.users?.telegram_id;
     if (!tgId) continue;
     try {
-      await sendFn(tgId, '*Pengingat*\n\nKamu belum mengisi laporan hari ini.\nKetik /lapor untuk mencatat pendapatan dan pengeluaran.', botToken);
+      await sendFn(tgId, '⏰ *Pengingat*\n\nKamu belum mengisi laporan hari ini.\nKetik /lapor untuk mencatat pendapatan dan pengeluaran.', botToken);
       await db.from('daily_reminders').update({ status: 'sent', sent_at: new Date().toISOString() }).eq('id', r.id);
       recovered++;
     } catch { /* biarkan failed */ }
@@ -403,7 +403,7 @@ export async function processUpdate(db, update, sendFn, botToken, appUrl) {
   if (text.startsWith('/start')) {
     await setBotState(db, user.id, null);
     return [
-      `Halo${user.name ? ' ' + user.name : ''}!`,
+      `Halo${user.name ? ' ' + user.name : ''}! 👋`,
       '',
       'Aku *Dimanage*, asisten pencatat keuangan penjual ubi cilembu panggang.',
       '',
@@ -430,7 +430,7 @@ export async function processUpdate(db, update, sendFn, botToken, appUrl) {
     const { token, expiresAt } = await generateDashboardToken(db, user);
     const base = appUrl || 'https://dimanage.vercel.app';
     return [
-      '*Akses Web Dashboard*',
+      '🔑 *Akses Web Dashboard*',
       '',
       'Klik link ini untuk buka dashboard:',
       `${base}/?token=${token}`,
@@ -441,7 +441,7 @@ export async function processUpdate(db, update, sendFn, botToken, appUrl) {
   }
 
   if (isCommand) {
-    return 'Perintah tidak dikenal.\n\n' + helpText();
+    return 'Perintah tidak dikenal 🤔\n\n' + helpText();
   }
 
   // lanjutkan flow yang aktif
