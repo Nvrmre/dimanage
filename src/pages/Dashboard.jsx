@@ -154,6 +154,18 @@ export default function Dashboard({ user, onLogout }) {
         )}
       </main>
 
+      {/* Floating action button — input tanggal apa aja */}
+      {!loading && (
+        <button
+          className="fab"
+          onClick={() => openForm(emptyForm(today))}
+          aria-label="Input transaksi baru"
+          title="Input transaksi"
+        >
+          +
+        </button>
+      )}
+
       {formOpen && (
         <TransactionForm
           initial={formInitial}

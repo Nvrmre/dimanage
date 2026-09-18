@@ -245,3 +245,14 @@ button { font-family: inherit; cursor: pointer; }
 /* ---- day detail modal ---- */
 .day-detail-modal { max-width: 400px; width: 90vw; }
 .modal-overlay { z-index: 50; }
+
+/* ---- floating action button ---- */
+.fab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 40;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--primary); color: #fff; border: none;
+  font-size: 28px; line-height: 1; box-shadow: 0 4px 12px rgba(15, 118, 110, .35);
+  transition: transform .15s ease, filter .15s ease;
+}
+.fab:active { transform: scale(.95); }
+.fab:hover { filter: brightness(1.08); }
