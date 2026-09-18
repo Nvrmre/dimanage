@@ -46,7 +46,7 @@ export default function TransactionForm({ initial, onClose, onSubmit, onDelete }
       <div className="modal card" role="dialog" aria-modal="true">
         <div className="modal-head">
           <h3>{editing ? 'Edit Transaksi' : 'Input Transaksi'}</h3>
-          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Tutup">✕</button>
+          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Tutup">Tutup</button>
         </div>
 
         <form onSubmit={submit}>

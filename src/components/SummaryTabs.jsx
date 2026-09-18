@@ -1,7 +1,6 @@
 import React from 'react';
 
 const TABS = [
-  { id: 'daily', label: 'Harian' },
   { id: 'weekly', label: 'Mingguan' },
   { id: 'monthly', label: 'Bulanan' }
 ];

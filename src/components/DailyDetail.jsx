@@ -1,12 +1,20 @@
 import React from 'react';
 import { formatDateID, formatRp } from '../utils/index.js';
 
-/**
- * Detail satu tanggal: pendapatan, seluruh pengeluaran (harian + bahan baku),
- * laba bersih. Kalau tidak ada data → "Belum ada data" (bukan Rp0 income).
- */
+/** Detail satu tanggal: pendapatan, seluruh pengeluaran (harian + bahan baku),
+ *  laba bersih. Kalau tidak ada data → "Belum ada data" (bukan Rp0 income). */
 export default function DailyDetail({ summary, date, tx, onEdit }) {
-  if (!summary) return null;
+  if (!summary) {
+    return (
+      <section className="card daily-detail">
+        <div className="daily-detail-head">
+          <h3>{formatDateID(date, true).hari}, {formatDateID(date).label}</h3>
+          <button className="btn btn-primary btn-sm" onClick={onEdit}>+ Input Transaksi</button>
+        </div>
+        <p className="muted">Belum ada data untuk tanggal ini.</p>
+      </section>
+    );
+  }
   const info = formatDateID(date, true);
   const hasData = summary.has_data;
 
@@ -14,8 +22,8 @@ export default function DailyDetail({ summary, date, tx, onEdit }) {
     <section className="card daily-detail">
       <div className="daily-detail-head">
         <h3>{info.hari}, {info.label}</h3>
-        <button className="btn btn-ghost btn-sm" onClick={onEdit}>
-          {tx ? 'Edit' : '+ Input'}
+        <button className="btn btn-primary btn-sm" onClick={onEdit}>
+          {tx ? 'Edit Transaksi' : '+ Input Transaksi'}
         </button>
       </div>
       {!hasData ? (

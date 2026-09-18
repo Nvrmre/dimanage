@@ -25,7 +25,7 @@ export default function Login({ onLogin }) {
   return (
     <div className="login-wrap">
       <div className="login-card">
-        <div className="login-logo">📊</div>
+        <div className="login-logo" aria-hidden="true">D</div>
         <h1>Dimanage</h1>
         <p className="login-sub">Finance Tracker — catat jualan, lihat laba bersih.</p>
 
